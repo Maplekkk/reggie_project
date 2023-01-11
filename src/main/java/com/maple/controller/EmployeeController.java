@@ -1,6 +1,8 @@
 package com.maple.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.maple.common.R;
 import com.maple.pojo.Employee;
 import com.maple.service.EmployeeService;
@@ -8,15 +10,14 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.SerializationUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * ClassName:EmployeeController
@@ -90,6 +91,22 @@ public class EmployeeController {
         employeeService.save(employee);
 
         return R.success("添加成功");
+    }
+
+    @GetMapping("/page")
+    public R<Page> page(int page, int pageSize, String name) {
+        Page<Employee> pageInfo = new Page(page, pageSize);
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(name != null && name != "", Employee::getName, name);
+        queryWrapper.orderByDesc(Employee::getUpdateTime);
+        employeeService.page(pageInfo, queryWrapper);
+        // 若当前的页数大于总页数, 就按照最大的页数再去查一次
+        if (page > pageInfo.getPages())
+        {
+            pageInfo.setCurrent(pageInfo.getPages());
+            employeeService.page(pageInfo, queryWrapper);
+        }
+        return R.success(pageInfo);
     }
 
 }
