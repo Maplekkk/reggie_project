@@ -1,5 +1,6 @@
 package com.maple.common;
 
+import com.maple.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,6 +34,11 @@ public class GlobalExceptionHandler {
         }
 
         return R.error("新增失败, 账号不能重复");
+    }
+    @ExceptionHandler(CustomException.class)
+    public R<String> exceptionHandler(CustomException exception){
+        log.error(exception.getMessage());
+        return R.error(exception.getMessage());
     }
 
 }

@@ -81,12 +81,7 @@ public class EmployeeController {
     public R<String> save(HttpServletRequest request, @RequestBody Employee employee){
         // 设置初始密码
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-
-        Long id = (Long) request.getSession().getAttribute("employee");
-        employee.setCreateUser(id);
-        employee.setUpdateUser(id);
+        log.info("save内的线程id{}", Thread.currentThread().getId());
 
         employeeService.save(employee);
 
@@ -108,5 +103,22 @@ public class EmployeeController {
         }
         return R.success(pageInfo);
     }
+    @PutMapping
+    public R<String> update(HttpServletRequest request, @RequestBody Employee employee){
+        log.info("线程id为:{}", Thread.currentThread().getId());
+        log.info(employee.toString());
+        Long id = (Long) request.getSession().getAttribute("employee");
+        //employee.setUpdateTime(LocalDateTime.now());
+        //employee.setUpdateUser(id);
+        boolean b = employeeService.updateById(employee);
+        return b ? R.success("ok") : R.error("GG");
+    }
 
+
+    @GetMapping("/{id}")
+    public R<Employee> getById(@PathVariable Long id){
+        Employee employee = employeeService.getById(id);
+        log.info(employee.toString());
+        return R.success(employee);
+    }
 }

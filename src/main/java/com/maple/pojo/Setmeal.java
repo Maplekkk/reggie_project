@@ -3,37 +3,32 @@ package com.maple.pojo;
 import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.time.LocalDate;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
- * @TableName employee
+ * @TableName setmeal
  */
-@TableName(value ="employee")
+@TableName(value ="setmeal")
 @Data
-public class Employee implements Serializable {
-    @TableId
-    //@JsonFormat(shape = JsonFormat.Shape.STRING)
+public class Setmeal implements Serializable {
     private Long id;
+
+    private Long categoryId;
 
     private String name;
 
-    private String username;
-
-    private String password;
-
-    private String phone;
-
-    private String sex;
-
-    private String idNumber;
+    private BigDecimal price;
 
     private Integer status;
+
+    private String code;
+
+    private String description;
+
+    private String image;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
@@ -46,6 +41,8 @@ public class Employee implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+
+    private Integer isDeleted;
 
     private static final long serialVersionUID = 1L;
 }
