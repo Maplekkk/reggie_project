@@ -21,6 +21,27 @@
             <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
     </resultMap>
 
+    <resultMap id="DTOBaseResultMap" type="com.maple.dto.DishDto">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createUser" column="create_user" jdbcType="BIGINT"/>
+        <result property="updateUser" column="update_user" jdbcType="BIGINT"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="categoryName" column="category_name" jdbcType="VARCHAR"/>
+        <collection property="flavors" select="com.maple.mapper.DishFlavorMapper.getAllByDishId" column="id"/>
+    </resultMap>
+
+
+
     <sql id="Base_Column_List">
         id,name,category_id,
         price,code,image,
@@ -28,4 +49,17 @@
         create_time,update_time,create_user,
         update_user,is_deleted
     </sql>
+    <select id="getDishDtoWithPage" resultMap="DTOBaseResultMap">
+        select
+            d.id as id,d.name,category_id,
+            price,code,image,
+            description,status,d.sort,
+            d.create_time,d.update_time,d.create_user,
+            d.update_user,is_deleted, c.name as category_name
+        from
+            dish d join category c on d.category_id = c.id
+        order by
+                d.sort ASC, d.update_time DESC
+        limit #{start}, #{pageSize}
+    </select>
 </mapper>

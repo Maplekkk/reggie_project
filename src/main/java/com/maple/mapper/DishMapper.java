@@ -1,7 +1,11 @@
 package com.maple.mapper;
 
+import com.maple.dto.DishDto;
 import com.maple.pojo.Dish;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
 * @author maple
@@ -10,7 +14,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.maple.pojo.Dish
 */
 public interface DishMapper extends BaseMapper<Dish> {
-
+    List<DishDto> getDishDtoWithPage(@Param("start") int start, @Param("pageSize") int pageSize);
 }
 
 
