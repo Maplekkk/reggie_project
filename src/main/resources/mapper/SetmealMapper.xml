@@ -20,6 +20,27 @@
             <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
     </resultMap>
 
+
+    <resultMap id="DtoResultMap" type="com.maple.dto.SetmealDto">
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="categoryId" column="category_id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="price" column="price" jdbcType="DECIMAL"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="code" column="code" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="image" column="image" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createUser" column="create_user" jdbcType="BIGINT"/>
+        <result property="updateUser" column="update_user" jdbcType="BIGINT"/>
+        <result property="isDeleted" column="is_deleted" jdbcType="INTEGER"/>
+        <result property="categoryName" column="category_name"/>
+        <collection property="setmealDishes"
+                    select="com.maple.mapper.SetmealDishMapper.getByIdSetmealDish"
+                    column="id"/>
+    </resultMap>
+
     <sql id="Base_Column_List">
         id,category_id,name,
         price,status,code,
@@ -27,4 +48,7 @@
         update_time,create_user,update_user,
         is_deleted
     </sql>
+    <select id="getSetmealDtoById" resultMap="DtoResultMap">
+        select <include refid="Base_Column_List"/> from setmeal where id = #{id};
+    </select>
 </mapper>

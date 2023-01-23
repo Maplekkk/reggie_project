@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.maple.common.R;
 import com.maple.dto.DishDto;
+import com.maple.pojo.Category;
 import com.maple.pojo.Dish;
 import com.maple.service.DishFlavorService;
 import com.maple.service.DishService;
@@ -14,6 +15,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ClassName:DishController
@@ -69,5 +72,18 @@ public class DishController {
         log.info(dishDto.toString());
         dishService.updateWithFlavor(dishDto);
         return R.success("保存成功");
+    }
+    @GetMapping("/list")
+    public R<List<DishDto>> list(Long categoryId){
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(categoryId != null, Dish::getCategoryId, categoryId);
+        queryWrapper.eq(Dish::getStatus, 1);
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        List<Dish> list = dishService.list(queryWrapper);
+        List<DishDto> res = list.stream().map(item->{
+            DishDto dto = dishService.getByIdWithFlavor(item.getId());
+            return dto;
+        }).collect(Collectors.toList());
+        return R.success(res);
     }
 }
